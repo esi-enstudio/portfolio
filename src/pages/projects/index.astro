@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navigation from '../../components/layout/Navigation.astro';
+import Footer from '../../components/layout/Footer.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import { getCollection } from 'astro:content';
+
+const projects = await getCollection('projects');
+---
+
+<BaseLayout title="Projects" description="A showcase of my best work and featured projects.">
+  <Navigation />
+
+  <main class="pt-24 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <SectionHeading tag="Portfolio" title="All Projects" subtitle="Browse my complete portfolio of work." />
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {projects.map((project) => (
+          <a href={`/projects/${project.slug}`} class="group glass rounded-2xl overflow-hidden hover:neon-glow transition-all duration-500">
+            <div class="h-48 bg-gradient-to-br from-purple/20 to-cyan/20 flex items-center justify-center relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-purple/30 to-cyan/30 flex items-center justify-center">
+                <span class="text-4xl font-display font-bold text-white/30 group-hover:scale-110 transition-transform duration-500">
+                  {project.data.title.split(' ').map(w => w[0]).join('')}
+                </span>
+              </div>
+            </div>
+            <div class="p-6">
+              <span class="text-xs font-mono text-purple-light">{project.data.category}</span>
+              <h3 class="text-lg font-display font-bold mt-1 mb-2 group-hover:gradient-text">{project.data.title}</h3>
+              <p class="text-sm text-muted leading-relaxed">{project.data.description}</p>
+              <div class="flex flex-wrap gap-2 mt-4">
+                {project.data.technologies.slice(0, 3).map((tech) => (
+                  <span class="px-2.5 py-1 text-xs rounded-md bg-white/5 text-muted">{tech}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

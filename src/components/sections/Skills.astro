@@ -1,0 +1,101 @@
+---
+import SectionHeading from '../ui/SectionHeading.astro';
+import { SKILLS } from '../../lib/constants';
+---
+
+<section id="skills" class="relative py-24 md:py-32 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionHeading
+      tag="Skills"
+      title="Technologies & Expertise"
+      subtitle="A comprehensive toolkit for building modern digital experiences."
+      tagKey="skills.tag"
+      titleKey="skills.title"
+      subtitleKey="skills.subtitle"
+    />
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {Object.entries(SKILLS).map(([category, items]) => (
+        <div class="glass rounded-2xl p-6 md:p-8 hover:neon-glow transition-all duration-500 group">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple/20 to-cyan/20 flex items-center justify-center">
+              {category === 'frontend' && (
+                <svg class="w-5 h-5 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              )}
+              {category === 'backend' && (
+                <svg class="w-5 h-5 text-purple-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                </svg>
+              )}
+              {category === 'database' && (
+                <svg class="w-5 h-5 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                </svg>
+              )}
+              {category === 'devops' && (
+                <svg class="w-5 h-5 text-purple-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              )}
+              {category === 'design' && (
+                <svg class="w-5 h-5 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+              )}
+            </div>
+            <h3 class="text-lg font-display font-bold capitalize">{category}</h3>
+          </div>
+
+          <div class="space-y-4">
+            {items.map((skill) => (
+              <div class="group/item">
+                <div class="flex justify-between text-sm mb-1.5">
+                  <span class="text-muted group-hover/item:text-foreground transition-colors">{skill.name}</span>
+                  <span class="font-mono text-xs text-purple-light">{skill.level}%</span>
+                </div>
+                <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                  <div
+                    class="h-full rounded-full bg-gradient-to-r from-purple to-cyan skill-bar transition-all duration-1000"
+                    style={`width: 0%`}
+                    data-width={skill.level}
+                  >
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const skillBars = document.querySelectorAll('.skill-bar');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const bars = entry.target.querySelectorAll('.skill-bar');
+            bars.forEach((bar) => {
+              const width = bar.getAttribute('data-width');
+              setTimeout(() => {
+                bar.style.width = width + '%';
+              }, 200);
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    document.querySelectorAll('.glass.rounded-2xl').forEach((card) => {
+      observer.observe(card);
+    });
+  });
+</script>

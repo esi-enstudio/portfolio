@@ -1,0 +1,46 @@
+---
+export interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'outline';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+  type?: string;
+  [key: string]: any;
+}
+
+const { href, variant = 'primary', size = 'md', children, ...rest } = Astro.props;
+
+const variants: Record<string, string> = {
+  primary: 'bg-gradient-to-r from-purple to-cyan text-white hover:shadow-lg hover:shadow-purple/25',
+  secondary: 'bg-white/10 text-foreground hover:bg-white/20 border border-white/10',
+  outline: 'bg-transparent text-foreground border border-purple/50 hover:bg-purple/10',
+};
+
+const sizes: Record<string, string> = {
+  sm: 'px-4 py-2 text-sm',
+  md: 'px-6 py-3 text-base',
+  lg: 'px-8 py-4 text-lg',
+};
+
+const baseClass = `magnetic-btn inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all duration-300 cursor-pointer ${variants[variant]} ${sizes[size]} ${Astro.props.class || ''}`;
+---
+
+<a href={href || '#'} class={baseClass} {...rest}>
+  <slot />
+</a>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll('.magnetic-btn').forEach((btn) => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'translate(0, 0)';
+      });
+    });
+  });
+</script>

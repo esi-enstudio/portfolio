@@ -1,0 +1,40 @@
+<div id="custom-cursor" class="fixed pointer-events-none z-[9999] w-6 h-6 rounded-full border border-purple/50 bg-purple/10 backdrop-blur-sm transition-transform duration-100 -translate-x-1/2 -translate-y-1/2 hidden lg:block">
+  <div id="cursor-dot" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-purple rounded-full"></div>
+</div>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const cursor = document.getElementById('custom-cursor');
+    if (!cursor) return;
+
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function animate() {
+      cursorX += (mouseX - cursorX) * 0.1;
+      cursorY += (mouseY - cursorY) * 0.1;
+      cursor.style.left = cursorX + 'px';
+      cursor.style.top = cursorY + 'px';
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    document.querySelectorAll('a, button, .hover-target').forEach((el) => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+        cursor.style.borderColor = 'rgba(6, 182, 212, 0.8)';
+        cursor.style.backgroundColor = 'rgba(6, 182, 212, 0.15)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        cursor.style.borderColor = 'rgba(124, 58, 237, 0.5)';
+        cursor.style.backgroundColor = 'rgba(124, 58, 237, 0.1)';
+      });
+    });
+  });
+</script>

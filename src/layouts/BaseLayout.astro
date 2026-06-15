@@ -1,0 +1,103 @@
+---
+import { SITE, SOCIAL } from '../lib/constants';
+import '../styles/globals.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const { title, description, image } = Astro.props;
+const pageTitle = title ? `${title} | ${SITE.author}` : SITE.title;
+const pageDesc = description || SITE.description;
+const pageImage = image || `${SITE.url}/og-image.jpg`;
+---
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={pageDesc} />
+    <meta name="author" content={SITE.author} />
+
+    <link rel="canonical" href={SITE.url} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDesc} />
+    <meta property="og:image" content={pageImage} />
+    <meta property="og:url" content={SITE.url} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDesc} />
+    <meta name="twitter:image" content={pageImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": SITE.author,
+      "url": SITE.url,
+      "email": SITE.email,
+      "telephone": SITE.phone,
+      "jobTitle": "Full Stack Developer",
+      "sameAs": [
+        SOCIAL.github,
+        SOCIAL.linkedin,
+        SOCIAL.twitter,
+      ],
+    })}>
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <title>{pageTitle}</title>
+
+    <script is:inline>
+      (function() {
+        var saved = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        if (saved === 'light' || (!saved && prefersLight)) {
+          document.documentElement.classList.add('light');
+        }
+        var locale = localStorage.getItem('locale');
+        if (locale === 'bn') {
+          document.documentElement.setAttribute('lang', 'bn');
+        } else {
+          document.documentElement.setAttribute('lang', 'en');
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-deep-black text-foreground antialiased">
+    <slot />
+    <script>
+      document.addEventListener('astro:page-load', () => {
+        const sections = document.querySelectorAll('.section-hidden');
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('section-visible');
+                entry.target.classList.remove('section-hidden');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+        sections.forEach((section) => observer.observe(section));
+      });
+    </script>
+    <script>
+      import { initI18n } from '../scripts/i18n';
+      document.addEventListener('astro:page-load', initI18n);
+      if (document.readyState !== 'loading') initI18n();
+      else document.addEventListener('DOMContentLoaded', initI18n);
+    </script>
+  </body>
+</html>

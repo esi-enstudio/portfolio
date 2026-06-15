@@ -1,0 +1,130 @@
+---
+import SectionHeading from '../ui/SectionHeading.astro';
+---
+
+<section id="portfolio" class="relative py-24 md:py-32 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionHeading
+      tag="Portfolio"
+      title="Featured Projects"
+      subtitle="A showcase of my best work — each project represents a unique challenge and a crafted solution."
+      tagKey="portfolio.tag"
+      titleKey="portfolio.title"
+      subtitleKey="portfolio.subtitle"
+    />
+
+    <div class="flex flex-wrap justify-center gap-3 mb-12" id="filter-buttons">
+      {['All', 'Web App', 'Laravel', 'React', 'Astro', 'Design'].map((cat) => (
+        <button
+          class="filter-btn px-5 py-2 rounded-full text-sm font-medium glass text-muted hover:text-foreground hover:neon-glow transition-all duration-300 data-active"
+          data-filter={cat === 'All' ? '*' : cat}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-grid">
+      {[
+        {
+          title: 'E-Commerce Platform',
+          cat: 'Laravel',
+          desc: 'Full-featured e-commerce solution with real-time inventory, payment processing, and admin dashboard.',
+          tech: ['Laravel', 'Vue JS', 'MySQL', 'Redis'],
+        },
+        {
+          title: 'Marketing Website',
+          cat: 'Astro',
+          desc: 'High-performance marketing site with blazing fast load times and stunning animations.',
+          tech: ['Astro JS', 'Tailwind CSS', 'GSAP', 'Three.js'],
+        },
+        {
+          title: 'Dashboard App',
+          cat: 'React',
+          desc: 'Analytics dashboard with real-time data visualization and interactive charts.',
+          tech: ['React', 'TypeScript', 'D3.js', 'Node.js'],
+        },
+        {
+          title: 'API Platform',
+          cat: 'Laravel',
+          desc: 'RESTful API platform serving millions of requests with comprehensive documentation.',
+          tech: ['Laravel', 'API', 'PostgreSQL', 'Docker'],
+        },
+        {
+          title: 'Portfolio Site',
+          cat: 'Astro',
+          desc: 'Personal portfolio with smooth animations, dark mode, and optimized performance.',
+          tech: ['Astro JS', 'Framer Motion', 'GSAP', 'Tailwind'],
+        },
+        {
+          title: 'SaaS Platform',
+          cat: 'Web App',
+          desc: 'Subscription-based SaaS platform with user management, billing, and analytics.',
+          tech: ['Next JS', 'Node.js', 'MongoDB', 'Stripe'],
+        },
+      ].map((project) => (
+        <div
+          class="project-card group glass rounded-2xl overflow-hidden hover:neon-glow transition-all duration-500 cursor-pointer"
+          data-category={project.cat}
+        >
+          <div class="relative h-48 bg-gradient-to-br from-purple/20 to-cyan/20 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple/30 to-cyan/30 flex items-center justify-center">
+              <span class="text-4xl font-display font-bold text-white/30 group-hover:scale-110 transition-transform duration-500">
+                {project.title.split(' ').map(w => w[0]).join('')}
+              </span>
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-card via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+              <div class="flex gap-2">
+                <span class="px-3 py-1 text-xs rounded-full glass text-cyan">{project.cat}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <h3 class="text-lg font-display font-bold mb-2 group-hover:gradient-text transition-all">{project.title}</h3>
+            <p class="text-sm text-muted leading-relaxed mb-4">{project.desc}</p>
+            <div class="flex flex-wrap gap-2">
+              {project.tech.map((t) => (
+                <span class="px-2.5 py-1 text-xs rounded-md bg-white/5 text-muted font-mono">{t}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach((b) =>
+          b.classList.remove('text-foreground', 'neon-glow')
+        );
+        btn.classList.add('text-foreground');
+        const filter = btn.getAttribute('data-filter');
+        projectCards.forEach((card) => {
+          if (filter === '*' || card.getAttribute('data-category') === filter) {
+            card.style.display = 'block';
+            setTimeout(() => {
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, 50);
+          } else {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+              card.style.display = 'none';
+            }, 300);
+          }
+        });
+      });
+    });
+
+    filterButtons[0]?.classList.add('text-foreground');
+  });
+</script>

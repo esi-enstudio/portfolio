@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navigation from '../../components/layout/Navigation.astro';
+import Footer from '../../components/layout/Footer.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+---
+
+<BaseLayout title="Blog" description="Articles about web development, design, and technology.">
+  <Navigation />
+
+  <main class="pt-24 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <SectionHeading tag="Blog" title="All Articles" subtitle="Browse all my articles on web development and technology." />
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {posts.map((post) => (
+          <a href={`/blog/${post.slug}`} class="group glass rounded-2xl overflow-hidden hover:neon-glow transition-all duration-500">
+            <div class="h-44 bg-gradient-to-br from-purple/20 to-cyan/20 flex items-center justify-center relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-purple/20 to-cyan/20 group-hover:scale-110 transition-transform duration-500"></div>
+              <span class="relative text-5xl font-display font-bold text-white/10 group-hover:text-white/20 transition-all">{post.data.category[0]}</span>
+            </div>
+            <div class="p-6">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-xs font-mono text-purple-light">{post.data.category}</span>
+                <span class="w-1 h-1 rounded-full bg-muted"></span>
+                <span class="text-xs text-muted">{post.data.date.toLocaleDateString()}</span>
+              </div>
+              <h3 class="font-display font-bold mb-2 group-hover:gradient-text">{post.data.title}</h3>
+              <p class="text-sm text-muted leading-relaxed">{post.data.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

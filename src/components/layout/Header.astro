@@ -1,0 +1,155 @@
+---
+import { NAV_LINKS, SITE } from '../../lib/constants';
+---
+
+<header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 glass header-visible">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="flex items-center justify-between h-16 md:h-20">
+      <a href="/" class="text-xl font-display font-bold gradient-text hover:opacity-80 transition-opacity">
+        {SITE.author.split(' ')[0]}<span class="text-cyan">.</span>
+      </a>
+
+      <div class="hidden lg:flex items-center gap-1">
+        {NAV_LINKS.map((link) => (
+          <a
+            href={link.href}
+            class="nav-link px-4 py-2 text-sm text-muted hover:text-foreground transition-colors duration-300 relative group"
+            data-i18n={link.label === 'Home' ? 'nav.home' : `nav.${link.label.toLowerCase()}`}
+          >
+            {link.label}
+            <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-purple transition-all duration-300 group-hover:w-3/4"></span>
+          </a>
+        ))}
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="locale-toggle" class="w-10 h-10 rounded-full glass flex items-center justify-center text-muted hover:text-foreground transition-all duration-300 hover:neon-glow cursor-pointer text-xs font-semibold" aria-label="Switch language">
+          <span id="locale-label">EN</span>
+        </button>
+
+        <button id="theme-toggle" class="w-10 h-10 rounded-full glass flex items-center justify-center text-muted hover:text-foreground transition-all duration-300 hover:neon-glow cursor-pointer" aria-label="Toggle theme">
+          <svg id="theme-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path id="theme-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <button id="mobile-menu-toggle" class="lg:hidden w-10 h-10 rounded-full glass flex items-center justify-center text-muted hover:text-foreground transition-all duration-300 cursor-pointer" aria-label="Toggle menu">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <div id="mobile-menu" class="lg:hidden fixed inset-0 z-40 bg-dark-surface/95 backdrop-blur-xl translate-x-full transition-transform duration-500">
+    <div class="flex flex-col items-center justify-center h-full gap-8">
+      {NAV_LINKS.map((link) => (
+        <a
+          href={link.href}
+          class="mobile-nav-link text-2xl font-display text-muted hover:text-foreground transition-colors duration-300"
+          data-i18n={link.label === 'Home' ? 'nav.home' : `nav.${link.label.toLowerCase()}`}
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    const header = document.getElementById('header');
+    const mobileToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIconPath = document.getElementById('theme-icon-path');
+    const localeToggle = document.getElementById('locale-toggle');
+    const localeLabel = document.getElementById('locale-label');
+
+    if (!themeToggle) return;
+
+    const isLight = () => document.documentElement.classList.contains('light');
+
+    function updateThemeIcon() {
+      if (!themeIconPath) return;
+      if (isLight()) {
+        themeIconPath.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z');
+      } else {
+        themeIconPath.setAttribute('d', 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z');
+      }
+    }
+
+    function updateLocaleLabel() {
+      if (!localeLabel) return;
+      const saved = localStorage.getItem('locale');
+      localeLabel.textContent = saved === 'bn' ? 'BN' : 'EN';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const willBeLight = !isLight();
+      document.documentElement.classList.toggle('light', willBeLight);
+      localStorage.setItem('theme', willBeLight ? 'light' : 'dark');
+      updateThemeIcon();
+    });
+
+    localeToggle?.addEventListener('click', () => {
+      const saved = localStorage.getItem('locale');
+      const next = saved === 'bn' ? 'en' : 'bn';
+      localStorage.setItem('locale', next);
+      document.documentElement.setAttribute('lang', next === 'bn' ? 'bn' : 'en');
+      updateLocaleLabel();
+      import('../../scripts/i18n').then((m) => m.applyTranslations(next));
+    });
+
+    updateThemeIcon();
+    updateLocaleLabel();
+
+    let ticking = false;
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const current = window.scrollY;
+          if (current > 100) {
+            header?.classList.add('shadow-lg');
+            if (current > lastScroll) {
+              header?.classList.add('header-hidden');
+              header?.classList.remove('header-visible');
+            } else {
+              header?.classList.remove('header-hidden');
+              header?.classList.add('header-visible');
+            }
+          } else {
+            header?.classList.remove('shadow-lg');
+            header?.classList.remove('header-hidden');
+            header?.classList.add('header-visible');
+          }
+          lastScroll = current;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    mobileToggle?.addEventListener('click', () => {
+      const isNowOpen = mobileMenu?.classList.toggle('translate-x-full');
+      document.body.style.overflow = isNowOpen ? '' : 'hidden';
+    });
+
+    document.querySelectorAll('.mobile-nav-link').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileMenu?.classList.add('translate-x-full');
+        document.body.style.overflow = '';
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeader);
+  } else {
+    initHeader();
+  }
+  document.addEventListener('astro:page-load', initHeader);
+</script>

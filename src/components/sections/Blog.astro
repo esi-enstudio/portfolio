@@ -1,0 +1,91 @@
+---
+import SectionHeading from '../ui/SectionHeading.astro';
+---
+
+<section id="blog" class="relative py-24 md:py-32 overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-deep-black via-purple/5 to-deep-black pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <SectionHeading
+      tag="Blog"
+      title="Latest Articles"
+      subtitle="Thoughts, tutorials, and insights on web development, design, and technology."
+      tagKey="blog.tag"
+      titleKey="blog.title"
+      subtitleKey="blog.subtitle"
+    />
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {[
+        {
+          title: 'Building Performant Websites with Astro JS',
+          desc: 'Learn how to leverage Astro JS for building blazing-fast websites with minimal JavaScript.',
+          date: 'Mar 15, 2024',
+          tags: ['Astro', 'Performance'],
+          cat: 'Development',
+        },
+        {
+          title: 'Mastering Laravel: Best Practices for 2024',
+          desc: 'A comprehensive guide to building robust applications with Laravel following industry best practices.',
+          date: 'Feb 28, 2024',
+          tags: ['Laravel', 'PHP'],
+          cat: 'Backend',
+        },
+        {
+          title: 'The Art of UI/UX Design for Developers',
+          desc: 'Understanding design principles to create better user experiences in your web applications.',
+          date: 'Feb 10, 2024',
+          tags: ['Design', 'UX'],
+          cat: 'Design',
+        },
+        {
+          title: 'Getting Started with TypeScript in 2024',
+          desc: 'A beginners guide to TypeScript and why it should be your go-to for modern web development.',
+          date: 'Jan 25, 2024',
+          tags: ['TypeScript', 'JavaScript'],
+          cat: 'Development',
+        },
+        {
+          title: 'Docker for Web Developers: A Practical Guide',
+          desc: 'Containerize your web applications with Docker for consistent development and deployment.',
+          date: 'Jan 12, 2024',
+          tags: ['Docker', 'DevOps'],
+          cat: 'DevOps',
+        },
+        {
+          title: 'Creating Stunning Animations with GSAP',
+          desc: 'Elevate your web projects with smooth, performant animations using the GSAP library.',
+          date: 'Dec 20, 2023',
+          tags: ['GSAP', 'Animation'],
+          cat: 'Frontend',
+        },
+      ].map((post) => (
+        <a
+          href={`/blog/${post.title.toLowerCase().replace(/\s+/g, '-')}`}
+          class="group glass rounded-2xl overflow-hidden hover:neon-glow transition-all duration-500"
+        >
+          <div class="h-44 bg-gradient-to-br from-purple/20 to-cyan/20 flex items-center justify-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple/20 to-cyan/20 group-hover:scale-110 transition-transform duration-500"></div>
+            <span class="relative text-5xl font-display font-bold text-white/10 group-hover:text-white/20 transition-all duration-500">
+              {post.cat[0]}
+            </span>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-xs font-mono text-purple-light">{post.cat}</span>
+              <span class="w-1 h-1 rounded-full bg-muted"></span>
+              <span class="text-xs text-muted">{post.date}</span>
+            </div>
+            <h3 class="font-display font-bold mb-2 group-hover:gradient-text transition-all">{post.title}</h3>
+            <p class="text-sm text-muted leading-relaxed mb-4">{post.desc}</p>
+            <div class="flex flex-wrap gap-2">
+              {post.tags.map((tag) => (
+                <span class="px-2.5 py-1 text-xs rounded-md bg-white/5 text-muted">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
